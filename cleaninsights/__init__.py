@@ -16,7 +16,7 @@ class CleanInsights:
         self.conf = conf
         self.store = store
 
-    def measure_visit(self, path: str, campaignId: str):
+    def measure_visit(self, path: str, campaign_id: str):
         raise NotImplementedError
 
     def measure_event(self, category: str,

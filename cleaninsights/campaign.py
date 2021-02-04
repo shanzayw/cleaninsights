@@ -10,7 +10,7 @@ class Campaign:
     start: date
     end: date
     aggregation_period_length: int
-    number_Of_Periods: Optional[int]
+    number_of_periods: Optional[int]
     only_record_once: bool
     event_aggregation_rule: str
 
