@@ -1,5 +1,5 @@
 Clean Insights Python SDK
-========================
+=========================
 
 This document describes how to get started using the Clean Insights SDK for
 Python. 
