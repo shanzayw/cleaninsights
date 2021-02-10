@@ -17,4 +17,9 @@ class Configuration:
 
     @classmethod
     def from_dict(cls, conf_data: Dict[str, Any]):  # -> Configuration
-        raise NotImplementedError
+        campaigns = [Campaign.from_dict(c) for c in conf_data["campaigns"]]
+        return Configuration(conf_data["server"], conf_data["site_id"],
+                             campaigns, conf_data["timeout"],
+                             conf_data["persist_every_n_times"],
+                             conf_data["server_side_anon_usage"],
+                             conf_data["debug"])

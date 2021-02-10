@@ -16,4 +16,11 @@ class Campaign:
 
     @classmethod
     def from_dict(cls, campaign_data: Dict[str, Any]):  # -> Campaign
-        raise NotImplementedError
+        try:
+            number_of_periods = campaign_data["number_of_periods"]
+        except KeyError:
+            number_of_periods = None
+        return Campaign(campaign_data["start"], campaign_data["end"],
+                        campaign_data["aggregation_period_length"],
+                        number_of_periods, campaign_data["only_record_once"],
+                        campaign_data["event_aggregation_rule"])
