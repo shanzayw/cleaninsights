@@ -20,3 +20,13 @@ class Event(DataPoint):
         self.action = action
         self.name = name
         self.value = value
+
+    def __repr__(self):
+        return (f"<Visit path={self.path} "
+                f"action={self.action} "
+                f"name={self.name} "
+                f"value={self.value} "
+                f"campaign_id={self.campaign_id} "
+                f"times={self.times} "
+                f"first={self.first} "
+                f"last={self.last}>")

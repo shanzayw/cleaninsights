@@ -12,3 +12,10 @@ class Visit(DataPoint):
                  first: Optional[datetime], last: Optional[datetime]):
         super().__init__(campaign_id, times, first, last)
         self.path = path
+
+    def __repr__(self):
+        return (f"<Visit path={self.path} "
+                f"campaign_id={self.campaign_id} "
+                f"times={self.times} "
+                f"first={self.first} "
+                f"last={self.last}>")
