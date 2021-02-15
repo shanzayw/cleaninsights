@@ -1,6 +1,8 @@
 import argparse
+import json
 import re
 import sys
+import time
 from datetime import MAXYEAR
 from datetime import date
 from datetime import datetime
@@ -10,12 +12,28 @@ from io import TextIOWrapper
 
 from cleaninsights.store import Store
 from cleaninsights.conf import Configuration
+from cleaninsights.visit import Visit
 from cleaninsights import CleanInsights
 
 WEBSTATS_LINE_REGEX = (
     r"^((?:\d{1,3}\.){3}\d{1,3}) (\S+) (\S+) \[([\w/]+[\w:]+"
     r"\s[+\-]\d{4})\] \"([A-Z]+) ([^\"]+) ([A-Z]+/\d\.\d)\" "
     r"(\d{3}) (\d+|-)(.*)$")
+
+
+class CleanInsightsEncoder(json.JSONEncoder):
+    def default(self, obj):
+        if isinstance(obj, Visit):
+            return {
+                "action_name": obj.path,
+                "times": obj.times,
+                "period_start": obj.first,
+                "period_end": obj.last
+            }
+        elif isinstance(obj, date):
+            return time.mktime(obj.timetuple())
+        else:
+            return json.JSONEncoder.default(self, obj)
 
 
 class FixedOffset(tzinfo):
@@ -128,6 +146,12 @@ def run():
     for logfile in args.logs:
         for line in parse_log(logfile):
             ci.measure_visit(line.group(6), "webstats")
+    print(
+        json.dumps({
+            "idsite": ci.conf.site_id,
+            "visits": ci.store.visits
+        },
+                   cls=CleanInsightsEncoder))
 
 
 if __name__ == "__main__":
