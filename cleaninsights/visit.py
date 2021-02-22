@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import date
 from typing import List
 from typing import Optional
 
@@ -9,7 +9,7 @@ class Visit(DataPoint):
     path: List[str]
 
     def __init__(self, path: List[str], campaign_id: str, times: Optional[int],
-                 first: Optional[datetime], last: Optional[datetime]):
+                 first: date, last: date):
         super().__init__(campaign_id, times, first, last)
         self.path = path
 

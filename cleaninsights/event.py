@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import date
 from typing import Optional
 from typing import Union
 
@@ -14,7 +14,7 @@ class Event(DataPoint):
     def __init__(self, category: str, action: Optional[str],
                  name: Optional[str], value: Optional[Union[int, float]],
                  campaign_id: str, times: Optional[int],
-                 first: Optional[datetime], last: Optional[datetime]):
+                 first: date, last: date):
         super().__init__(campaign_id, times, first, last)
         self.category = category
         self.action = action
