@@ -7,6 +7,8 @@ from typing import Dict
 from typing import Optional
 
 from cleaninsights.aggregation_rule import EventAggregationRule
+from cleaninsights.aggregation_period import AggregationPeriod
+
 
 @dataclass
 class Campaign:
@@ -24,11 +26,10 @@ class Campaign:
     The end date for this campaign. Measurements to be recorded before this
     date will be ignored.
     """
-    aggregation_period_length: int
+    aggregation_period_length: timedelta
     """
-    The length of each aggregation period, in days. In "real-time" mode,
-    aggregated data will be sent to the analytics server at the end of each
-    aggregation period.
+    The length of each aggregation period. In "real-time" mode, aggregated data
+    will be sent to the analytics server at the end of each aggregation period.
     """
     number_of_periods: Optional[int]
     """
@@ -45,39 +46,36 @@ class Campaign:
     """
     The aggregation rule to be used when recording measurements.
     """
-
     @property
-    def aggregation_period(self) -> timedelta:
+    def current_measurement_period(self) -> Optional[AggregationPeriod]:
         """
-        The aggregation period as a :class:`datetime.timedelta`.
-        """
-        return timedelta(days=self.aggregation_period_length)
-
-    @property
-    def current_measurement_period(self) -> Optional[Dict[str, date]]:
-        """
-        The start and end dates for the current aggregation period.
+        The current aggregation period, with start (inclusive) and end
+        (exclusive) dates. If it is currently before or after the campaign's
+        :attr:`start <Campaign.start>` or `end <Campaign.end>` dates, `None`
+        will be returned.
         """
         now = datetime.utcnow().date()
         if now < self.start or now > self.end:
             return None
         start = self.start
         while True:
-            end = start + self.aggregation_period
+            end = start + self.aggregation_period_length
             if end > now:
                 break
-            start += self.aggregation_period
+            start += self.aggregation_period_length
         if end < now:
             return None
-        return {"start": start, "end": end}
+        return AggregationPeriod(start, end)
 
     @classmethod
     def from_dict(cls, campaign_data: Dict[str, Any]):  # -> Campaign
         try:
+            aggregation_period_length = timedelta(
+                days=campaign_data["aggregation_period_length"])
             number_of_periods = campaign_data["number_of_periods"]
         except KeyError:
             number_of_periods = None
         return Campaign(campaign_data["start"], campaign_data["end"],
-                        campaign_data["aggregation_period_length"],
-                        number_of_periods, campaign_data["only_record_once"],
+                        aggregation_period_length, number_of_periods,
+                        campaign_data["only_record_once"],
                         campaign_data["event_aggregation_rule"])
