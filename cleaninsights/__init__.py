@@ -115,4 +115,4 @@ class CleanInsights:
             return None
         if not campaign.only_record_once:
             datapoint.times += 1
-            return datapoint
+        return datapoint
