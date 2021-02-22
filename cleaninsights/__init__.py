@@ -36,8 +36,7 @@ class CleanInsights:
             period = campaign.current_measurement_period
             if period is None:
                 return
-            visit = Visit(path, campaign_id, None, period.start,
-                          period.end)
+            visit = Visit(path, campaign_id, None, period.start, period.end)
             self.store.visits.append(visit)
 
     def measure_event(self,
@@ -102,9 +101,10 @@ class CleanInsights:
             return None
 
         def is_needle(d: D):
-            return (d.campaign_id == campaign_id and d.first >= period.start
-                    and d.first <= period.end and d.last >= period.start
-                    and d.last <= period.end and where(d))
+            return (period is not None and d.campaign_id == campaign_id
+                    and d.first >= period.start and d.first <= period.end
+                    and d.last >= period.start and d.last <= period.end
+                    and where(d))
 
         datapoint = next(iter([d for d in haystack if is_needle(d)]), None)
         if datapoint is None:
