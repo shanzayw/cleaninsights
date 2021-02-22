@@ -30,9 +30,10 @@ class CleanInsights:
         if campaign is None:
             self.persist_and_send()
             return
-        visit = self.get_and_measure(
-            self.store.visits, campaign_id, campaign,
-            lambda v: "/".join(v.path) == "/".join(path))
+        where: Callable[[Visit],
+                        bool] = lambda v: "/".join(v.path) == "/".join(path)
+        visit = self.get_and_measure(self.store.visits, campaign_id, campaign,
+                                     where)
         if visit is None:
             period = campaign.current_measurement_period
             if period is None:
@@ -98,7 +99,7 @@ class CleanInsights:
 
     def get_and_measure(self, haystack: List[D], campaign_id: str,
                         campaign: Campaign,
-                        where: Callable[[D, D], bool]) -> Optional[D]:
+                        where: Callable[[D], bool]) -> Optional[D]:
         period = campaign.current_measurement_period
         if period is None:
             return None
