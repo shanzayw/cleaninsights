@@ -6,6 +6,7 @@ API Documentation
    :caption: Contents:
 
    aggregation_rule
+   aggregation_period
    campaign
    cleaninsights
    conf
