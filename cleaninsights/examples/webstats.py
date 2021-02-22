@@ -95,7 +95,7 @@ def apache_date(s):
         'Nov': 11,
         'Dec': 12
     }
-    s = s[1:-1]
+    #s = s[1:-1]
     tz_string = s[21:26]
     tz = FixedOffset(tz_string)
     return datetime(year=int(s[7:11]),
@@ -104,7 +104,7 @@ def apache_date(s):
                     hour=int(s[12:14]),
                     minute=int(s[15:17]),
                     second=int(s[18:20]),
-                    tzinfo=tz).astimezone(tzinfo=timezone.utc).date()
+                    tzinfo=tz).astimezone(timezone.utc)
 
 
 def parse_args():
@@ -153,7 +153,7 @@ def run():
     ci = ci_init()
     for logfile in args.logs:
         for line in parse_log(logfile):
-            ci.measure_visit(line.group(6), "webstats")
+            ci.measure_visit(line.group(6), "webstats", dt=apache_date(line.group(4)))
     print(
         json.dumps({
             "idsite": ci.conf.site_id,

@@ -16,6 +16,7 @@ D = TypeVar('D', DataPoint, Event, Visit)
 
 
 class CleanInsights:
+    """Core class for the CleanInsights SDK."""
     conf: Configuration
     store: Store
     persistence_counter: int
@@ -24,17 +25,23 @@ class CleanInsights:
         self.conf = conf
         self.store = store
 
-    def measure_visit(self, path: List[str], campaign_id: str) -> None:
-        campaign = self.get_campaign_if_good(campaign_id, campaign_id)
+    def measure_visit(self,
+                      path: List[str],
+                      campaign_id: str,
+                      dt: Optional[datetime] = None) -> None:
+        """Measure a visit."""
+        if dt is None:
+            dt = datetime.utcnow()
+        campaign = self.get_campaign_if_good(campaign_id, campaign_id, dt)
         if campaign is None:
             self.persist_and_send()
             return
         where: Callable[[Visit],
                         bool] = lambda v: "/".join(v.path) == "/".join(path)
         visit = self.get_and_measure(self.store.visits, campaign_id, campaign,
-                                     where)
+                                     where, dt)
         if visit is None:
-            period = campaign.current_measurement_period
+            period = campaign.aggregation_period(dt)
             if period is None:
                 return
             visit = Visit(path, campaign_id, None, period.start, period.end)
@@ -46,6 +53,7 @@ class CleanInsights:
                       campaign_id: str,
                       name: Optional[str] = None,
                       value: Union[int, float] = None):
+        """Measure an event."""
         raise NotImplementedError
 
     @property
@@ -83,12 +91,15 @@ class CleanInsights:
     def persist_and_send(self) -> None:
         raise NotImplementedError
 
-    def get_campaign_if_good(self, campaign_id: str,
-                             debug_str: str) -> Optional[Campaign]:
+    def get_campaign_if_good(
+            self,
+            campaign_id: str,
+            debug_str: str,
+            dt: Optional[datetime] = None) -> Optional[Campaign]:
         campaign = self.conf.campaigns.get(campaign_id, None)
         if campaign is None:
             return None
-        now = datetime.utcnow().date()
+        now = dt.date() if dt is not None else datetime.utcnow().date()
         if now < campaign.start or now > campaign.end:
             print(f"Measurement {debug_str} discarded, because campaign "
                   f"{campaign_id}' didn't start yet or already finished.")
@@ -98,8 +109,11 @@ class CleanInsights:
 
     def get_and_measure(self, haystack: List[D], campaign_id: str,
                         campaign: Campaign,
-                        where: Callable[[D], bool]) -> Optional[D]:
-        period = campaign.current_measurement_period
+                        where: Callable[[D], bool],
+                        dt: Optional[datetime] = None) -> Optional[D]:
+        if dt is None:
+            dt = datetime.utcnow()
+        period = campaign.aggregation_period(dt)
         if period is None:
             return None
 

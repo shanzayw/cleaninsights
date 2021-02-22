@@ -51,22 +51,43 @@ class Campaign:
     def current_measurement_period(
             self) -> Optional[AggregationPeriod]:  # noqa: D401
         """
-        The current aggregation period.
+        Alias for :attr:`Campaign.current_aggregation_period`.
+        **Deprecated.** This name is used in the TypeScript and iOS SDKs,
+        however is not consistent with usage in the Campaign object.
+        """
+        return self.current_aggregation_period
+
+    @property
+    def current_aggregation_period(
+            self) -> Optional[AggregationPeriod]:  # noqa: D401
+        """
+        The current aggregation period for this campaign.
         The period defines start (inclusive) and end (exclusive) dates. If it
         is currently before or after the campaign's :attr:`start
-        <Campaign.start>` or `end <Campaign.end>` dates, `None` will be
+        <Campaign.start>` or :attr:`end <Campaign.end>` dates, `None` will be
         returned.
         """
-        now = datetime.utcnow().date()
-        if now < self.start or now > self.end:
+        return self.aggregation_period(datetime.utcnow())
+
+    def aggregation_period(
+            self, dt: datetime) -> Optional[AggregationPeriod]:  # noqa: D401
+        """
+        The aggregation period for this campaign in which `dt` falls.
+        The period defines start (inclusive) and end (exclusive) dates. If it
+        is currently before or after the campaign's :attr:`start
+        <Campaign.start>` or :attr:`end <Campaign.end>` dates, `None` will be
+        returned.
+        """
+        d = dt.date()
+        if d < self.start or d > self.end:
             return None
         start = self.start
         while True:
             end = start + self.aggregation_period_length
-            if end > now:
+            if end > d:
                 break
             start += self.aggregation_period_length
-        if end < now:
+        if end < d:
             return None
         return AggregationPeriod(start, end)
 

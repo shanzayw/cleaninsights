@@ -25,9 +25,9 @@ class Store:
             self.visits = []
 
     def load(self, *args,
-             **kwargs) -> Optional[List[Dict[str, Union[str, int, float]]]]:
+             **kwargs) -> Optional[Dict[str, List[Dict[str, Union[str, int, float]]]]]:
         if len(args) > 0 and args[0] == "memory":
-            return None
+            return dict()
         else:
             raise NotImplementedError
 
