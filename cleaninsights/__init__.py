@@ -25,7 +25,7 @@ class CleanInsights:
         self.conf = conf
         self.store = store
 
-    def measure_visit(self, path: str, campaign_id: str) -> None:
+    def measure_visit(self, path: List[str], campaign_id: str) -> None:
         campaign = self.get_campaign_if_good(campaign_id, campaign_id)
         if campaign is None:
             self.persist_and_send()
