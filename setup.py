@@ -23,12 +23,13 @@ setup(
                  "cutting edge techniques like differential privacy, onion "
                  "routing, certificate pinning and more."),
     long_description=long_description,
+    long_description_content_type="text/markdown",
     keywords="privacy metrics analytics",
     url="https://gitlab.com/cleaninsights/clean-insights-python-sdk/",
     project_urls={
         "Bug Tracker":
-        "https://gitlab.com/keanuapp/clean-insights-python-sdk/-/issues",
-        "Source Code": "https://gitlab.com/keanuapp/clean-insights-python-sdk",
+        "https://gitlab.com/cleaninsights/clean-insights-python-sdk/-/issues",
+        "Source Code": "https://gitlab.com/cleaninsights/clean-insights-python-sdk",
     },
     classifiers=["License :: OSI Approved :: BSD License"],
     test_suite='nose.collector',
