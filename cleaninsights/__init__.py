@@ -29,6 +29,7 @@ class CleanInsights:
         campaign = self.get_campaign_if_good(campaign_id, campaign_id)
         if campaign is None:
             this.persist_and_send()
+            return
         visit = self.get_and_measure(
             self.store.visits, campaign_id, campaign,
             lambda v: "/".join(v.path) == "/".join(path))
@@ -85,6 +86,8 @@ class CleanInsights:
     def get_campaign_if_good(self, campaign_id: str,
                              debug_str: str) -> Optional[Campaign]:
         campaign = self.conf.campaigns.get(campaign_id, None)
+        if campaign is None:
+            return None
         now = datetime.utcnow().date()
         if now < campaign.start or now > campaign.end:
             print(f"Measurement {debug_str} discarded, because campaign "
