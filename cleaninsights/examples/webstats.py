@@ -6,9 +6,12 @@ import time
 from datetime import MAXYEAR
 from datetime import date
 from datetime import datetime
+from datetime import timedelta
 from datetime import timezone
 from datetime import tzinfo
 from io import TextIOWrapper
+from typing import Iterator
+from typing import Optional
 
 from cleaninsights.store import Store
 from cleaninsights.conf import Configuration
@@ -73,10 +76,10 @@ class FixedOffset(tzinfo):
 
 def apache_date(s):
     """
-     Given a string representation of a datetime in apache format (e.g.
-     "01/Sep/2012:06:05:11 +0000"), return the python date for that
-     string, with timezone.
-     """
+    Parse a date from an Apache log file. Given a string representation of a
+    datetime in apache format (e.g.  "01/Sep/2012:06:05:11 +0000"), returns a
+    UTC :class:`date <datetime.date>` for that string.
+    """
     month_map = {
         'Jan': 1,
         'Feb': 2,
@@ -104,6 +107,7 @@ def apache_date(s):
 
 
 def parse_args():
+    """Parse command line arguments."""
     parser = argparse.ArgumentParser(description="Import webstats logs.")
     parser.add_argument('logs',
                         nargs='*',
@@ -113,6 +117,7 @@ def parse_args():
 
 
 def ci_init():
+    """Initialize the CleanInsights SDK."""
     config = Configuration.from_dict({
         "debug": False,
         "persist_every_n_times": 1,
@@ -134,13 +139,15 @@ def ci_init():
     return CleanInsights(config, store)
 
 
-def parse_log(logfile: TextIOWrapper):
+def parse_log(logfile: TextIOWrapper) -> Iterator[Optional[re.Match[str]]]:
+    """Parse an Apache log file returning an iterator."""
     p = re.compile(WEBSTATS_LINE_REGEX)
     for line in logfile:
         yield p.match(line)
 
 
 def run():
+    """Main entry point to the webstats application."""
     args = parse_args()
     ci = ci_init()
     for logfile in args.logs:
