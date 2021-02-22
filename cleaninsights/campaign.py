@@ -6,15 +6,16 @@ from typing import Any
 from typing import Dict
 from typing import Optional
 
-from cleaninsights.aggregation_rule import EventAggregationRule
 from cleaninsights.aggregation_period import AggregationPeriod
+from cleaninsights.aggregation_rule import EventAggregationRule
 
 
 @dataclass
 class Campaign:
     """
-    A measurement campaign provides a logical grouping for event and visit
-    measurements, bounded by time and with specific measurement properties.
+    A logical grouping for event and visit measurements. This grouping is
+    user-defined and can be bounded by time and with specific measurement
+    properties.
     """
     start: date
     """

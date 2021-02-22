@@ -1,4 +1,3 @@
-from datetime import date
 from datetime import datetime
 from typing import Callable
 from typing import List
