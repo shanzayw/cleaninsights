@@ -13,10 +13,10 @@ from io import TextIOWrapper
 from typing import Iterator
 from typing import Optional
 
-from cleaninsights.store import Store
-from cleaninsights.conf import Configuration
-from cleaninsights.visit import Visit
 from cleaninsights import CleanInsights
+from cleaninsights.conf import Configuration
+from cleaninsights.store import Store
+from cleaninsights.visit import Visit
 
 WEBSTATS_LINE_REGEX = (
     r"^((?:\d{1,3}\.){3}\d{1,3}) (\S+) (\S+) \[([\w/]+[\w:]+"
@@ -76,9 +76,10 @@ class FixedOffset(tzinfo):
 
 def apache_date(s):
     """
-    Parse a date from an Apache log file. Given a string representation of a
-    datetime in apache format (e.g.  "01/Sep/2012:06:05:11 +0000"), returns a
-    UTC :class:`date <datetime.date>` for that string.
+    Parse a date from an Apache log file.
+    Given a string representation of a datetime in apache format (e.g.
+    "01/Sep/2012:06:05:11 +0000"), returns a UTC :class:`date <datetime.date>`
+    for that string.
     """
     month_map = {
         'Jan': 1,
@@ -147,7 +148,7 @@ def parse_log(logfile: TextIOWrapper) -> Iterator[Optional[re.Match[str]]]:
 
 
 def run():
-    """Main entry point to the webstats application."""
+    """Run the webstats application."""
     args = parse_args()
     ci = ci_init()
     for logfile in args.logs:
@@ -157,8 +158,7 @@ def run():
         json.dumps({
             "idsite": ci.conf.site_id,
             "visits": ci.store.visits
-        },
-                   cls=CleanInsightsEncoder))
+        }, cls=CleanInsightsEncoder))
 
 
 if __name__ == "__main__":

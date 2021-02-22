@@ -13,9 +13,9 @@ from cleaninsights.aggregation_rule import EventAggregationRule
 @dataclass
 class Campaign:
     """
-    A logical grouping for event and visit measurements. This grouping is
-    user-defined and can be bounded by time and with specific measurement
-    properties.
+    A logical grouping for event and visit measurements.
+    This grouping is user-defined and can be bounded by time and with specific
+    measurement properties.
     """
     start: date
     """
@@ -48,12 +48,14 @@ class Campaign:
     The aggregation rule to be used when recording measurements.
     """
     @property
-    def current_measurement_period(self) -> Optional[AggregationPeriod]:
+    def current_measurement_period(
+            self) -> Optional[AggregationPeriod]:  # noqa: D401
         """
-        The current aggregation period, with start (inclusive) and end
-        (exclusive) dates. If it is currently before or after the campaign's
-        :attr:`start <Campaign.start>` or `end <Campaign.end>` dates, `None`
-        will be returned.
+        The current aggregation period.
+        The period defines start (inclusive) and end (exclusive) dates. If it
+        is currently before or after the campaign's :attr:`start
+        <Campaign.start>` or `end <Campaign.end>` dates, `None` will be
+        returned.
         """
         now = datetime.utcnow().date()
         if now < self.start or now > self.end:
