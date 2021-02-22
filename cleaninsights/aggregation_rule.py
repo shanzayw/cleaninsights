@@ -2,7 +2,8 @@ from enum import Enum
 
 
 class EventAggregationRule(Enum):
-    """Calculate the sum of the values."""
+    """The aggregation rule to use for source aggregation of results."""
     SUM = "sum"
-    """Calculate the mean average of the values."""
+    """Calculate the sum of the values."""
     AVG = "avg"
+    """Calculate the mean average of the values."""
