@@ -27,7 +27,7 @@ class Store:
     def load(self, *args,
              **kwargs) -> Optional[List[Dict[str, Union[str, int, float]]]]:
         if len(args) > 0 and args[0] == "memory":
-            return dict()
+            return None
         else:
             raise NotImplementedError
 
