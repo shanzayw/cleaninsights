@@ -29,7 +29,8 @@ setup(
     project_urls={
         "Bug Tracker":
         "https://gitlab.com/cleaninsights/clean-insights-python-sdk/-/issues",
-        "Source Code": "https://gitlab.com/cleaninsights/clean-insights-python-sdk",
+        "Source Code":
+        "https://gitlab.com/cleaninsights/clean-insights-python-sdk",
     },
     classifiers=["License :: OSI Approved :: BSD License"],
     test_suite='nose.collector',
