@@ -1,6 +1,7 @@
 import argparse
 import json
 import re
+import requests
 import sys
 import time
 from datetime import MAXYEAR
@@ -124,7 +125,7 @@ def ci_init():
         "persist_every_n_times": 1,
         "server": "metrics.cleaninsights.org",
         "server_side_anon_usage": True,
-        "site_id": 4,
+        "site_id": 11,
         "timeout": 10,
         "campaigns": {
             "webstats": {
@@ -154,12 +155,14 @@ def run():
     for logfile in args.logs:
         for line in parse_log(logfile):
             ci.measure_visit(line.group(6), "webstats", dt=apache_date(line.group(4)))
-    print(
-        json.dumps({
+    report = json.dumps({
             "idsite": ci.conf.site_id,
             "visits": ci.store.visits
-        }, cls=CleanInsightsEncoder))
-
+        }, cls=CleanInsightsEncoder)
+    print(report)
+    r = requests.post('https://metrics.cleaninsights.org/cleaninsights.php', data=report)
+    print(r.content)
+    r.raise_for_status()
 
 if __name__ == "__main__":
     run()
