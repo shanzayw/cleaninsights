@@ -43,16 +43,18 @@ beyond providing the ability to dump the collected data to CSV or submit the
 sanitised data to a Matomo instance via a `Clean Insights Matomo Proxy
 <https://gitlab.com/cleaninsights/clean-insights-matomo-proxy>`_.
 
+Table of Contents
+-----------------
+
 .. toctree::
    :maxdepth: 2
-   :caption: Contents:
 
    install
    quickstart
    api
 
 Indices and tables
-==================
+------------------
 
 * :ref:`genindex`
 * :ref:`modindex`
