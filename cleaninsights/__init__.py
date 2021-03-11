@@ -20,10 +20,15 @@ class CleanInsights:
     conf: Configuration
     store: Store
     persistence_counter: int
+    failed_submission_dt: datetime
+    failed_submission_count: int
+
 
     def __init__(self, conf, store):
         self.conf = conf
         self.store = store
+        self.persistence_counter = 0
+        self.failed_submission_count = 0
 
     def measure_visit(self,
                       path: List[str],
@@ -91,10 +96,19 @@ class CleanInsights:
     def persist_and_send(self) -> None:
         this.persist()
         insights = self.store._generate_insights()
+        if failed_submission_count > 0:
+            now = self.datetime.datetime.utcnow()
+            retry_allowed_at = max(self.failed_submission_dt + (self.conf.timeout * (2 ** self.failed_submission_count)), self.failed_submission_dt + timedelta(minutes=self.conf.max_retry))
+            if now < retry_allowed_at:
+                return
         if self.store.send(insights, self.conf.server, self.conf.timeout):
             pass  # TODO: Remove submitted results from the store
+            self.failed_submission_count = 0
         else:
             pass  # TODO: Increase backoff timer https://gitlab.com/cleaninsights/clean-insights-js-sdk/-/issues/5
+            if self.failed_submission_count == 0:
+                self.failed_submission_dt = datetime.datetime.utcnow()
+            self.failed_submission_count += 1
 
     def get_campaign_if_good(
             self,
