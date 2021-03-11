@@ -1,15 +1,14 @@
 from typing import Dict
 from typing import List
-from typing import Optional
 from typing import Union
 
 from cleaninsights.event import Event
+from cleaninsights.store import Store
 from cleaninsights.visit import Visit
 
 
-class Store:
-    events: List[Event]
-    visits: List[Visit]
+class MemoryStore(Store):
+    """A memory-resident store with no persistence."""
 
     def __init__(self, *args, **kwargs):
         data = self.load(*args, **kwargs)
@@ -25,14 +24,14 @@ class Store:
             self.visits = []
 
     def load(self, *args,
-             **kwargs) -> Optional[Dict[str, List[Dict[str, Union[str, int, float]]]]]:
-        if len(args) > 0 and args[0] == "memory":
-            return dict()
-        else:
-            raise NotImplementedError
+             **kwargs) -> Dict[str, List[Dict[str, Union[str, int, float]]]]:
+        """
+        This class provides no persistence and so this function returns no data.
+        """
+        return dict()
 
     def persist(self) -> None:
-        raise NotImplementedError
-
-    def send(self, data: str, server: str, timeout: int) -> bool:
-        raise NotImplementedError
+        """
+        This class provides no persistence and so this function does nothing.
+        """
+        pass

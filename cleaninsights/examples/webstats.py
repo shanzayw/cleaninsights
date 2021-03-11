@@ -1,7 +1,6 @@
 import argparse
 import json
 import re
-import requests
 import sys
 import time
 from datetime import MAXYEAR
@@ -14,9 +13,11 @@ from io import TextIOWrapper
 from typing import Iterator
 from typing import Optional
 
+import requests
+
 from cleaninsights import CleanInsights
 from cleaninsights.conf import Configuration
-from cleaninsights.store import Store
+from cleaninsights.store.memory import MemoryStore
 from cleaninsights.visit import Visit
 
 WEBSTATS_LINE_REGEX = (
@@ -137,7 +138,7 @@ def ci_init():
             }
         }
     })
-    store = Store("memory")
+    store = MemoryStore()
     return CleanInsights(config, store)
 
 
