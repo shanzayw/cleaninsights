@@ -89,7 +89,12 @@ class CleanInsights:
         raise NotImplementedError
 
     def persist_and_send(self) -> None:
-        raise NotImplementedError
+        this.persist()
+        insights = self.store._generate_insights()
+        if self.store.send(insights, self.conf.server, self.conf.timeout):
+            pass  # TODO: Remove submitted results from the store
+        else:
+            pass  # TODO: Increase backoff timer https://gitlab.com/cleaninsights/clean-insights-js-sdk/-/issues/5
 
     def get_campaign_if_good(
             self,

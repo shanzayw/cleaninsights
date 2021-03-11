@@ -1,12 +1,35 @@
+import http.client
+import json
 from typing import Dict
 from typing import List
 from typing import Union
+import urllib.parse
 
 from cleaninsights.event import Event
 from cleaninsights.visit import Visit
 
 
+class InsightsEncoder(json.JSONEncoder):
+    """A JSON encoder class for events and visits."""
+
+    def default(self, obj):
+        if isinstance(obj, Visit):
+            return {
+                "action_name": obj.path,
+                "times": obj.times,
+                "period_start": obj.first,
+                "period_end": obj.last
+            }
+        elif isinstance(obj, date):
+            return time.mktime(obj.timetuple())
+        else:
+            return json.JSONEncoder.default(self, obj)
+
+
+
 class Store:
+    """An abstract Store to be extended by specific implementations."""
+
     events: List[Event]
     visits: List[Visit]
 
@@ -31,4 +54,20 @@ class Store:
         raise NotImplementedError
 
     def send(self, data: str, server: str, timeout: int) -> bool:
-        raise NotImplementedError
+        url = urllib.parse.urlparse(server)
+        print(repr(url))
+        conn = http.client.HTTPSConnection(url.netloc, timeout=timeout)
+        headers = {"Content-Type": "application/json"}
+        conn.request("POST", url.path, data.encode("utf-8"), headers)
+        resp = conn.getresponse()
+        if resp.status in ['200', '204']:
+            return True
+        else:
+            return False
+
+    def _generate_insights(self, site_id: int) -> Dict:
+        return json.dumps({
+            "idsite": site_id,
+            "visits": self.visits,
+            "events": self.events
+        }, cls=InsightsEncoder)

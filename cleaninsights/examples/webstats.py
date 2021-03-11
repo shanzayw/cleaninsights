@@ -26,21 +26,6 @@ WEBSTATS_LINE_REGEX = (
     r"(\d{3}) (\d+|-)(.*)$")
 
 
-class CleanInsightsEncoder(json.JSONEncoder):
-    def default(self, obj):
-        if isinstance(obj, Visit):
-            return {
-                "action_name": obj.path,
-                "times": obj.times,
-                "period_start": obj.first,
-                "period_end": obj.last
-            }
-        elif isinstance(obj, date):
-            return time.mktime(obj.timetuple())
-        else:
-            return json.JSONEncoder.default(self, obj)
-
-
 class FixedOffset(tzinfo):
     """Fixed offset in minutes east from UTC."""
     def __init__(self, string):
