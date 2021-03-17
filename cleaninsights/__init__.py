@@ -97,7 +97,13 @@ class CleanInsights:
         this.persist()
         if failed_submission_count > 0:
             now = self.datetime.datetime.utcnow()
-            retry_allowed_at = min(self.failed_submission_dt + (self.conf.timeout * (2 ** self.failed_submission_count)), self.failed_submission_dt + timedelta(minutes=self.conf.max_retry))
+            exp_retry_allowed_at = self.failed_submission_dt + (self.conf.timeout * (2 ** self.failed_submission_count))
+            trn_retry_allowed_at = self.failed_submission_dt + timedelta(minutes=self.conf.max_retry)
+            if trn_retry_allowed_at < exp_retry_allowed_at:
+                retry_allowed_at = trn_retry_allowed_at
+                failed_submission_dt = now
+            else:
+                retry_allowed_at = exp_retry_allowed_at
             if now < retry_allowed_at:
                 return
         insights = self.store._generate_insights()
