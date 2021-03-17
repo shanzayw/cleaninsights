@@ -56,7 +56,7 @@ class Store:
     def send(self, data: str, server: str, timeout: int) -> bool:
         url = urllib.parse.urlparse(server)
         print(repr(url))
-        conn = http.client.HTTPSConnection(url.netloc, timeout=timeout.seconds)
+        conn = http.client.HTTPSConnection(url.netloc, timeout=timeout.total_seconds())
         headers = {"Content-Type": "application/json"}
         conn.request("POST", url.path, data.encode("utf-8"), headers)
         resp = conn.getresponse()
