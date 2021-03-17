@@ -56,7 +56,7 @@ class Store:
     def send(self, data: str, server: str, timeout: int) -> bool:
         url = urllib.parse.urlparse(server)
         print(repr(url))
-        conn = http.client.HTTPSConnection(url.netloc, timeout=timeout)
+        conn = http.client.HTTPSConnection(url.netloc, timeout=timeout.seconds)
         headers = {"Content-Type": "application/json"}
         conn.request("POST", url.path, data.encode("utf-8"), headers)
         resp = conn.getresponse()
@@ -66,6 +66,7 @@ class Store:
             return False
 
     def _generate_insights(self, site_id: int) -> Dict:
+        # TODO: Ignore insights older than a certain date
         return json.dumps({
             "idsite": site_id,
             "visits": self.visits,

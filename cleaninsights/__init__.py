@@ -95,12 +95,12 @@ class CleanInsights:
 
     def persist_and_send(self) -> None:
         this.persist()
-        insights = self.store._generate_insights()
         if failed_submission_count > 0:
             now = self.datetime.datetime.utcnow()
-            retry_allowed_at = max(self.failed_submission_dt + (self.conf.timeout * (2 ** self.failed_submission_count)), self.failed_submission_dt + timedelta(minutes=self.conf.max_retry))
+            retry_allowed_at = min(self.failed_submission_dt + (self.conf.timeout * (2 ** self.failed_submission_count)), self.failed_submission_dt + timedelta(minutes=self.conf.max_retry))
             if now < retry_allowed_at:
                 return
+        insights = self.store._generate_insights()
         if self.store.send(insights, self.conf.server, self.conf.timeout):
             pass  # TODO: Remove submitted results from the store
             self.failed_submission_count = 0
