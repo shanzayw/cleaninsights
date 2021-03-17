@@ -98,7 +98,7 @@ class CleanInsights:
         if failed_submission_count > 0:
             now = self.datetime.datetime.utcnow()
             exp_retry_allowed_at = self.failed_submission_dt + (self.conf.timeout * (2 ** self.failed_submission_count))
-            trn_retry_allowed_at = self.failed_submission_dt + timedelta(minutes=self.conf.max_retry)
+            trn_retry_allowed_at = self.failed_submission_dt + timedelta(minutes=self.conf.max_retry_delay)
             if trn_retry_allowed_at < exp_retry_allowed_at:
                 retry_allowed_at = trn_retry_allowed_at
                 failed_submission_dt = now
