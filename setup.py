@@ -25,12 +25,12 @@ setup(
     long_description=long_description,
     long_description_content_type="text/markdown",
     keywords="privacy metrics analytics",
-    url="https://gitlab.com/cleaninsights/clean-insights-python-sdk/",
+    url="https://github.com/shanzayw/cleaninsights.git/",
     project_urls={
         "Bug Tracker":
-        "https://gitlab.com/cleaninsights/clean-insights-python-sdk/-/issues",
+        "https://github.com/shanzayw/cleaninsights.git/-/issues",
         "Source Code":
-        "https://gitlab.com/cleaninsights/clean-insights-python-sdk",
+        "https://github.com/shanzayw/cleaninsights/",
     },
     classifiers=["License :: OSI Approved :: BSD License"],
     test_suite='nose.collector',
