@@ -111,6 +111,7 @@ def ci_init():
         "persist_every_n_times": 1,
         "server": "metrics.cleaninsights.org",
         "server_side_anon_usage": True,
+        "max_retry_delay": 0,
         "site_id": 11,
         "timeout": 10,
         "campaigns": {
